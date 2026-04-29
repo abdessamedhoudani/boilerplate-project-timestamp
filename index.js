@@ -38,11 +38,16 @@ app.get("/api/:date?", function (req, res) {
   if (!date) {
     timestamp = new Date();
   } else {
-    const parsedDate = new Date(date);
-    if (isNaN(parsedDate.getTime())) {
+    const isUnix = /^\d+$/.test(date);
+    if (isUnix) {
+      timestamp = new Date(Number(date)); // ✅ convertir en number d'abord
+    } else {
+    timestamp = new Date(date);
+    }
+
+    if (isNaN(timestamp.getTime())) {
       return res.json({ error: "Invalid date" });
     }
-    timestamp = parsedDate;
   }
 
   res.json({
